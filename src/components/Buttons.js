@@ -15,6 +15,7 @@ export default class Buttons extends Component {
         const eValue = event.target.value
         const { expression } = this.state
         this.setState({expression: expression + eValue})
+        this.props.currentInput(eValue)
         this.props.userInput(eValue)
         exStr(expression + eValue)
     }
@@ -23,6 +24,9 @@ export default class Buttons extends Component {
         const userInput = this.props.userInput
         const exStr = this.props.handleCalc
         const eValue = event.target.value
+
+        this.props.currentInput(eValue)
+        
         const { expression } = this.state
         if((/\+|-|÷|×/).test(eValue)){
             let newValue = eValue

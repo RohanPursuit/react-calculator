@@ -9,18 +9,24 @@ class App extends Component {
      userInput: '',
      currentInput: '',
      result: '',
+     replaceCurrent: false,
     }
   }
 
   handleCurrentInput = (value) => {
     const {currentInput} = this.state
-    if(/\d/.test(value)){
+    if(/\d/.test(value) && this.state.replaceCurrent){
+      this.setState({currentInput: value, replaceCurrent: false})
+    }
+    else if(/\d/.test(value)){
       this.setState({currentInput: currentInput + value})
+    } else {
+      this.setState({replaceCurrent: true})
     }
   }
   
   handleUserInput = (value, isEqual) => {
-    const {userInput, result} = this.state
+    const {userInput, currentInput, result} = this.state
     if(isEqual){
       this.setState({currentInput: result})
     } 
@@ -57,7 +63,7 @@ class App extends Component {
               {this.state.result}
             </div>
             </div>
-          <Buttons handleCalc={this.handleCalc} userInput={this.handleUserInput}/>
+          <Buttons handleCalc={this.handleCalc} userInput={this.handleUserInput} currentInput={this.handleCurrentInput}/>
       </div>
     );
   }
