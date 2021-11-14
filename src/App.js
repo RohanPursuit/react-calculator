@@ -7,24 +7,38 @@ class App extends Component {
     super()
     this.state = {
      userInput: '',
+     currentInput: '',
      result: '',
+    }
+  }
+
+  handleCurrentInput = (value) => {
+    const {currentInput} = this.state
+    if(/\d/.test(value)){
+      this.setState({currentInput: currentInput + value})
     }
   }
   
   handleUserInput = (value, isEqual) => {
+    const {userInput, result} = this.state
     if(isEqual){
-      this.setState({userInput: this.state.result})
-    } else {
-      this.setState({userInput: !value.length ? 0 : this.state.userInput + value})
-    }
-    if(this.state.userInput === 0){
+      this.setState({currentInput: result})
+    } 
+    if(Number(this.state.userInput) === 0){
       this.setState({userInput: value})
+    }
+    else {
+      this.setState({userInput: userInput + value})
+    }
+    if(isEqual === "AC"){
+      this.setState({userInput: 0, currentInput: 0, result: ''})
     }
   }
 
   handleCalc = (expression) => {
     if ((/\d/).test(expression[expression.length-1])){
-      this.setState({result: eval(expression)})
+      const ans = eval(expression)
+      this.setState({result: ans})
     }
     if(!expression.length){
       this.setState({result: expression})
@@ -36,8 +50,12 @@ class App extends Component {
       return (
         <div className="App">
           <div className="display">
-            <div className="userInput">{this.state.userInput || 0}</div>
-            <div className="result">{this.state.result}</div>
+            <div className="current-input">{this.state.currentInput || 0}</div>
+            <div className="userInput">{this.state.userInput || 0}
+            </div>
+            <div className="result">
+              {this.state.result}
+            </div>
             </div>
           <Buttons handleCalc={this.handleCalc} userInput={this.handleUserInput}/>
       </div>

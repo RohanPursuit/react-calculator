@@ -9,7 +9,7 @@
 
 .display {
 	grid-column: span 4;
-	height: 50px;
+	height: 100px;
 	text-align: right;
 	overflow-x: scroll;
 	/* overflow: hidden; */
@@ -19,7 +19,17 @@
 	grid-column: span 2;
 } */
 
-.result {
+.current-input {
+	margin-top: 20px;
+	font-size: 30px;
+}
+
+.userInput {
 	color: gray;
 	margin-top: 10px;
+}
+
+.result {
+	color: gray;
+	/* margin-top: 10px; */
 }

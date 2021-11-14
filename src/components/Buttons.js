@@ -42,7 +42,7 @@ export default class Buttons extends Component {
         }
         if(eValue === 'AC'){
             this.setState({expression: ''})
-            userInput('', false)
+            userInput('', 'AC')
             exStr('')
         }
         
