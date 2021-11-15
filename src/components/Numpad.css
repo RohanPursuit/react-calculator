@@ -1,0 +1,22 @@
+.numbers-operators {
+	display: grid;
+	grid-template-columns: repeat(5, 1fr);
+}
+
+.num0 {
+	width: 140px;
+}
+
+.numbers {
+	grid-column: span 3;
+	/* background-color: hotpink; */
+}
+
+.operators {
+	grid-column: span 1;
+	/* background-color: green; */
+}
+
+.equal {
+	height: 140px;
+}

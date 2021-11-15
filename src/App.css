@@ -1,35 +1,18 @@
 .App {
-	width: 250px;
+	/* text-align: center; */
+}
+.calculator {
+	width: 350px;
 	border: 1px solid #000;
-	display: grid;
-	grid-template-columns: repeat(4, 1fr);
-	margin: 100px;
-	/* text-align: right; */
+	margin: 70px;
 }
 
 .display {
-	grid-column: span 4;
-	height: 100px;
+	height: 50px;
 	text-align: right;
-	overflow-x: scroll;
-	/* overflow: hidden; */
 }
 
-/* .numpad {
-	grid-column: span 2;
-} */
-
-.current-input {
-	margin-top: 20px;
-	font-size: 30px;
-}
-
-.userInput {
-	color: gray;
-	margin-top: 10px;
-}
-
-.result {
-	color: gray;
-	/* margin-top: 10px; */
+button {
+	width: 70px;
+	height: 70px;
 }
