@@ -1,6 +1,6 @@
 .numbers-operators {
 	display: grid;
-	grid-template-columns: repeat(5, 1fr);
+	grid-template-columns: repeat(6, 1fr);
 }
 
 .num0 {
@@ -12,8 +12,12 @@
 	/* background-color: hotpink; */
 }
 
-.operators {
+.ac {
 	grid-column: span 1;
+}
+
+.operators {
+	grid-column: span 2;
 	/* background-color: green; */
 }
 
