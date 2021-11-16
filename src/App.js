@@ -26,24 +26,24 @@ class App extends Component {
         result: ''
       })
     } else if (value === "="){
-      this.setState({result: <Result integer={this.state.integer} expression={this.state.expression}/>})
+      this.setState({result: <Result expression={this.state.expression}/>})
     }else {
       if(/±/.test(value)  && /-/.test(integer[0])){
         expression[expression.length-1] = expression[expression.length-1].slice(1)
-        this.setState({integer: integer.slice(1), result: <Result integer={this.state.integer} expression={this.state.expression}/>})
+        this.setState({integer: integer.slice(1), result: <Result expression={this.state.expression}/>})
       } else if (/±/.test(value)  && !(/-/.test(integer[0]))){
         console.log('ran')
         expression[expression.length-1] = '-' + expression[expression.length-1]
-        this.setState({integer: '-' + integer, result: <Result integer={this.state.integer} expression={this.state.expression}/>})
+        this.setState({integer: '-' + integer, result: <Result expression={this.state.expression}/>})
       }
 
-      if(bool){
+      if(bool && /\d|\./.test(value)){
         expression[expression.length-1] = value
-        this.setState({integer: value, bool: false, result: <Result integer={this.state.integer} expression={this.state.expression}/>})
+        this.setState({integer: value, bool: false, result: <Result expression={this.state.expression}/>})
       }
       else if(/\d|\./.test(value)){
         expression[expression.length-1] = this.state.integer + value
-        this.setState({integer: this.state.integer + value, result: <Result integer={this.state.integer} expression={this.state.expression}/>})
+        this.setState({integer: this.state.integer + value, result: <Result expression={this.state.expression}/>})
       } else if (/\+|-|\*|\//.test(value)){
         const name = event.target.name
         expression.push(name)
