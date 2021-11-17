@@ -9,7 +9,7 @@ const reduceParens = (expression) => {
             p1 = reduceProd(p1)
         }
         if(Number(p1)) return 1*p1
-        while(/[\+\-]/.test(p1)){
+        while(/[+-]/.test(p1)){
             if(Number(p1)) return 1*p1
             p1 = reduceSum(p1)
         }
