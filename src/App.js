@@ -19,7 +19,7 @@ class App extends Component {
     const value = event.target.value
     const {expression, bool, integer} = this.state
 
-    const isZero = Number(integer) === Number(value)
+    const isZero = Number(integer) === 0 && Number(value) === 0
 
     let isParenComplete = true
 
@@ -53,6 +53,7 @@ class App extends Component {
         this.setState({integer: value, bool: false, result: <Result expression={this.state.expression} isParenComplete={isParenComplete}/>})
       }
       else if(/\d|\./.test(value) && !isZero){
+        console.log(isZero)
         expression[expression.length-1] = this.state.integer + value
         this.setState({integer: this.state.integer + value, result: <Result expression={this.state.expression} isParenComplete={isParenComplete}/>})
       } else if (/\+|-|\*|\/|\(|\)/.test(value)){
