@@ -20,12 +20,12 @@ class App extends Component {
     const {userInput, expressionArr} = this.state
     let { isOpenParen } = this.state
     const isNumber = !!Number(value)
-    console.log(isNumber)
     if(isNumber || value === '.' || value === '0'){
       let expressionArrSlice = expressionArr.slice(0, expressionArr.length-1)
       if(isNaN(Number(expressionArr[expressionArr.length-1]))){
         expressionArrSlice = expressionArr.slice(0, expressionArr.length)
       }
+      console.log(expressionArrSlice)
       this.setState({userInput: userInput + value, preview: [...expressionArrSlice, userInput + value], expressionArr: [...expressionArrSlice, userInput + value], result: <Result expression={[...expressionArrSlice, userInput + value]} isOpenParen={isOpenParen}/>})
     }else {
       switch(value){
@@ -46,7 +46,8 @@ class App extends Component {
           this.setState({userInput: -1*(Number(userInput)), preview: expressionArr.slice(0, expressionArr.length-1).join('') + -1*(Number(userInput)), expressionArr: [...expressionArr.slice(0, expressionArr.length-1), "" + -1*(Number(userInput))]})
         break;
         case '=':
-          this.setState({result: <Result expression={expressionArr} isOpenParen={isOpenParen}/>})
+          const ans = <Result expression={expressionArr} isOpenParen={isOpenParen}/>
+          this.setState({result: ans, userInput: ''})
           break;
         case '(':
           const isParenWithX = Number(expressionArr[expressionArr.length-1]) ? ['×', '('] : ['(']
@@ -91,7 +92,7 @@ class App extends Component {
           if(isNaN(Number(expressionArr[expressionArr.length-1])) && expressionArrSliceOne[expressionArrSliceOne.length-1] !== ')'){
           expressionArrSliceOne = expressionArr.slice(0, expressionArr.length-1)
         }
-        if(!!expressionArr.length && !!Number(expressionArr[expressionArr.length-1])){
+        if(!!expressionArr.length && !expressionArr[expressionArr.length-1].match(/[()]/)){
           this.setState({expressionArr: [...expressionArrSliceOne, name], userInput: '', preview: [...expressionArrSliceOne, name]})
         }
           
@@ -105,7 +106,16 @@ class App extends Component {
     const {preview, result, userInput} = this.state
     console.log(this.state.expressionArr)
     // console.log(this.state.userInput)
-    const display = result || userInput || 0
+    function showResultOrUserInput(){
+      let show = 0
+      if(!userInput.length){
+        show = result || 0
+      }else{
+        show = userInput
+      }
+      return show
+    }
+    const display = showResultOrUserInput()
       return (
       <div className="App">
         <main className="calculator">
