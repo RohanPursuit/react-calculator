@@ -1,44 +1,47 @@
 import {Component} from 'react'
 import '../App.css';
-import reduceParens from './reduceParens';
-import reduceProd from './reduceProd'
-import reduceSum from './reduceSum'
+import findParen from './findParen'
+import exponents from './exponents'
+import parens from './parens'
+import reduceStr from './reduceStr'
 
 export default class Result extends Component {
 
-    getResult = (expression) => {
-        expression = expression.split(" ").join('')
-        if(this.props.isOpen > 0 || /[^\d|)]/.test(expression[expression.length-1])){
-            return 0
+    calculate(expression, isOpenParen){
+        console.log(expression)
+        if(isOpenParen !== 0) return 0
+        while(expression.includes('^')){
+            const opIndex = expression.indexOf('^')
+            let startReplace = opIndex -1
+            let firstNumStart = startReplace
+            let firstNumEnd = opIndex
+            if(expression[startReplace] === ')'){
+                startReplace = findParen(expression, startReplace)
+                firstNumStart = startReplace + 1
+                firstNumEnd = opIndex - 1
+            }
+            let secondNumStart = opIndex + 1
+            let endReplace = opIndex + 1
+            let secondNumEnd = opIndex + 2
+            if(expression[endReplace] === '('){
+                endReplace = findParen(expression, endReplace)
+                secondNumStart = opIndex + 2
+                secondNumEnd = endReplace
+            }
+            // const range = endReplace - startReplace
+            expression.splice(startReplace, endReplace+1, exponents(expression.slice(firstNumStart, firstNumEnd), expression.slice(secondNumStart, secondNumEnd)))
         }
-
-        while(/\(/.test(expression)){
-            expression = expression.replace(/\+\+|--/g, '+')
-            expression = reduceParens(expression)
-        }
-    
-        // expression = expression.replace(/\)/g, '')
         
-        if(Number(expression)) return Number(expression).toLocaleString("en-US")
-        
-        while(/[×÷]/.test(expression)){
-            expression = expression.replace(/\+\+|--/g, '+')
-            expression = reduceProd(expression)
-        }
-        
-        if(Number(expression)) return Number(expression).toLocaleString("en-US")
+        parens(expression)
     
-        while(/[+-]/.test(expression)){
-            expression = expression.replace(/\+\+|--/g, '+')
-            expression = reduceSum(expression)
-            if(Number(expression)) return Number(expression).toLocaleString("en-US")
-        }
-
+        reduceStr(expression)
     
-        return Number(expression).toLocaleString("en-US")
+        return Number(expression[0]).toLocaleString()
+    
     }
 
     render() {
-        return this.getResult(this.props.expression.join(''))
+        const {expression, isOpenParen} = this.props
+        return this.calculate(expression, isOpenParen)
     }
 }

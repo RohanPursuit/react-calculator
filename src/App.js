@@ -3,104 +3,122 @@ import './App.css';
 import Numpad from './components/Numpad';
 import Result from './components/Result'
 
-
 class App extends Component {
   constructor() {
     super()
     this.state = {
-      integer: '',
-      bool: false,
-      expression: [''],
-      result: '',
-      isEqual: [''],
-      isOpen: 0,
+      userInput: '',
+      expressionArr: [],
+      preview: null,
+
+      result: 0,
+      isOpenParen: 0,
     }
   }
   onButtonClick = (event) => {
-    const value = event.target.value
-    const {expression, bool, integer} = this.state
-    let {isOpen} = this.state
-
-    const isZero = Number(integer) === 0 && Number(value) === 0
-
-    let isParenComplete = true
-
-    if(/\(/.test(expression)){
-      isParenComplete = /(\()(?!.*\1)(.*?)\)/.test(expression.join(''))
-      this.setState({result: <Result expression={this.state.expression} isParenComplete={isParenComplete} isOpen={isOpen}/>})
-    }
-    
-    if(value === 'AC'){
-        this.setState({
-        integer: '',
-        expression: [''],
-        bool: false,
-        result: '',
-        isEqual: [''],
-        isOpen: 0,
-      })
-    } else if (value === "="){
-      this.setState({result: <Result expression={this.state.expression} isParenComplete={isParenComplete} isOpen={isOpen}/>, isEqual: [],})
-    } else if (value === "C"){
-      expression[expression.length-1] = ""
-      this.setState({integer: ''})
-    } else {
-      if(/±/.test(value)  && /-/.test(integer[0])){
-        expression[expression.length-1] = expression[expression.length-1].slice(1)
-        this.setState({integer: integer.slice(1), result: <Result expression={this.state.expression} isParenComplete={isParenComplete} isOpen={isOpen}/>})
-      } else if (/±/.test(value)  && !(/-/.test(integer[0]))){
-        expression[expression.length-1] = '-' + expression[expression.length-1]
-        this.setState({integer: '-' + integer, result: <Result expression={this.state.expression} isParenComplete={isParenComplete} isOpen={isOpen}/>})
+    const {name, value} = event.target
+    const {userInput, expressionArr} = this.state
+    let { isOpenParen } = this.state
+    const isNumber = !!Number(value)
+    console.log(isNumber)
+    if(isNumber || value === '.' || value === '0'){
+      let expressionArrSlice = expressionArr.slice(0, expressionArr.length-1)
+      if(isNaN(Number(expressionArr[expressionArr.length-1]))){
+        expressionArrSlice = expressionArr.slice(0, expressionArr.length)
       }
+      this.setState({userInput: userInput + value, preview: [...expressionArrSlice, userInput + value], expressionArr: [...expressionArrSlice, userInput + value], result: <Result expression={[...expressionArrSlice, userInput + value]} isOpenParen={isOpenParen}/>})
+    }else {
+      switch(value){
+        case 'AC':
+          this.setState({
+            userInput: '',
+            expressionArr: [],
+            display: 0,
+            preview: null,
+            result: 0,
+            isOpenParen: 0
+          })
+        break;
+        case 'C':
+          this.setState({userInput: '', preview: expressionArr})
+        break;
+        case '±':
+          this.setState({userInput: -1*(Number(userInput)), preview: expressionArr.slice(0, expressionArr.length-1).join('') + -1*(Number(userInput)), expressionArr: [...expressionArr.slice(0, expressionArr.length-1), "" + -1*(Number(userInput))]})
+        break;
+        case '=':
+          this.setState({result: <Result expression={expressionArr} isOpenParen={isOpenParen}/>})
+          break;
+        case '(':
+          const isParenWithX = Number(expressionArr[expressionArr.length-1]) ? ['×', '('] : ['(']
+          this.setState({isOpenParen: ++isOpenParen, expressionArr: [...expressionArr, ...isParenWithX], preview: [...expressionArr, ...isParenWithX], userInput: ''})
+          break;
+        case ')':
+          this.setState({isOpenParen: --isOpenParen, expressionArr: [...expressionArr, value],preview: [...expressionArr, value], result: <Result expression={[...expressionArr, value]} isOpenParen={isOpenParen}/>})
+        break;
+        case '→':
+          let arr = expressionArr.slice(0, expressionArr.length-1)
+          if(expressionArr[expressionArr.length-1] === ')'){
+            this.setState({isOpenParen: ++isOpenParen})
+          } else if(expressionArr[expressionArr.length-1] === '('){
+            this.setState({isOpenParen: --isOpenParen})
+          }
+          if(expressionArr[expressionArr.length-1] === ''){
+            expressionArr.slice(0, expressionArr.length-2)
+            if(expressionArr[expressionArr.length-2] === ')'){
+              this.setState({isOpenParen: ++isOpenParen})
+            } else if(expressionArr[expressionArr.length-2] === '('){
+              this.setState({isOpenParen: --isOpenParen})
+            }
+          } 
+            let resultArr = arr.slice(0, arr.length)
+          if(isNaN(Number(arr[arr.length-1]))){
+            resultArr = arr.slice(0, arr.length-1)
+          }
 
-      if(bool && /\d|\./.test(value)){
-        expression[expression.length-1] = value
-        this.setState({integer: value, bool: false, result: <Result expression={this.state.expression} isParenComplete={isParenComplete} isOpen={isOpen}/>})
+          !!expressionArr.length &&
+          this.setState({expressionArr: arr, preview: arr, userInput: '', display: 0, result: <Result expression={resultArr} isOpenParen={isOpenParen}/>})
+        break;
+        case '^':
+          let expressionArrSlice = expressionArr.slice(0, expressionArr.length)
+      if(isNaN(Number(expressionArr[expressionArr.length-1])) && expressionArrSlice[expressionArrSlice.length-1] !== ')'){
+        expressionArrSlice = expressionArr.slice(0, expressionArr.length-1)
       }
-      else if(/\d|\./.test(value) && !isZero){
-        expression[expression.length-1] = this.state.integer + value
-        this.setState({integer: this.state.integer + value, result: <Result expression={this.state.expression} isParenComplete={isParenComplete} isOpen={isOpen}/>})
-      } else if (/\+|-|\*|\/|\(|\)/.test(value)){
-        if(value === '('){
-          this.setState({isOpen: ++isOpen})
-        } else if ( value === ")"){
-          this.setState({isOpen: --isOpen})
+          console.log(name)
+          this.setState({expressionArr: [...expressionArrSlice, name, '('], userInput: '', preview: [...expressionArrSlice, name, '('], isOpenParen: ++isOpenParen})
+        break;
+        default:
+          let expressionArrSliceOne = expressionArr.slice(0, expressionArr.length)
+          if(isNaN(Number(expressionArr[expressionArr.length-1])) && expressionArrSliceOne[expressionArrSliceOne.length-1] !== ')'){
+          expressionArrSliceOne = expressionArr.slice(0, expressionArr.length-1)
         }
-        const name = event.target.name
-        if(!expression[expression.length-1].length){
-          expression[expression.length-1] = name
-        } else {
-          expression.push(name)
+        if(!!expressionArr.length && !!Number(expressionArr[expressionArr.length-1])){
+          this.setState({expressionArr: [...expressionArrSliceOne, name], userInput: '', preview: [...expressionArrSliceOne, name]})
         }
-        expression.push('')
-        this.setState({bool: true})
+          
       }
     }
+   
   }
 
-  handleIsEqual = () => {
-    const display = !this.state.isEqual.length ? this.state.result : Number(this.state.integer).toLocaleString('en-US') || 0
-    if(!this.state.isEqual.length){
-      this.state.isEqual.push('')
-    }
-    
-    return display
-  }
   
   render() {
+    const {preview, result, userInput} = this.state
+    console.log(this.state.expressionArr)
+    // console.log(this.state.userInput)
+    const display = result || userInput || 0
       return (
       <div className="App">
         <main className="calculator">
           <section className="display">
           <div className="integer">
-            {this.handleIsEqual()}
+            {display}
           </div>
           <span className="expression">
-            {this.state.expression}
+            {preview}
           </span>
+          =
           <span className="result">
-            =
-            {this.state.result}
+            {result}
           </span>
         </section>
           <section className="numpad">

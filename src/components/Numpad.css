@@ -3,8 +3,14 @@
 	grid-template-columns: repeat(6, 1fr);
 }
 
+button {
+	font-size: 25px;
+	text-shadow: 0px 0px 2px;
+}
+
 .num0 {
 	width: 140px;
+	border-radius: 0px 0px 0px 10px;
 }
 
 .numbers {
@@ -23,4 +29,5 @@
 
 .equal {
 	height: 140px;
+	border-radius: 0px 0px 10px 0px;
 }
